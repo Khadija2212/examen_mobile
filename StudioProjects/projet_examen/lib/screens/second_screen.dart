@@ -14,15 +14,11 @@ class SecondScreen extends StatefulWidget {
 class _SecondScreenState extends State<SecondScreen> {
   @override
   Widget build(BuildContext context) {
-    // Récupérer l'instance de ThemeManager
     final themeManager = Provider.of<ThemeManager>(context);
-
-    // Déterminer si le mode sombre est actif
-    bool isDarkMode = themeManager.isDarkMode;
+    final bool isDarkMode = themeManager.isDarkMode;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(backScafoldColor),
         title: const Text(
           'MétéoVision',
           style: TextStyle(
@@ -32,14 +28,12 @@ class _SecondScreenState extends State<SecondScreen> {
           ),
         ),
         actions: [
-          // Bouton de changement de thème
           IconButton(
             icon: Icon(
               isDarkMode ? Icons.light_mode : Icons.dark_mode,
               color: Colors.white,
             ),
             onPressed: () {
-              // Basculer le thème en utilisant ThemeManager
               themeManager.toggleTheme();
             },
           ),

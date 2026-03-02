@@ -8,38 +8,50 @@ class MeteoTable extends StatelessWidget {
   final List<Map<String, dynamic>> meteoDataList;
 
   const MeteoTable({
-    Key? key,
+    super.key,
     required this.villes,
     required this.meteoDataList,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    // Couleurs adaptées selon le thème
+    final cardBg = isDark ? const Color(0xFF1A1A2E) : Colors.white;
+    final headerBg = const Color(backScafoldColor);
+    final textColor = isDark ? Colors.white : const Color(0xFF1A1A2E);
+    final subTextColor = isDark ? Colors.white70 : Colors.black87;
+    final dividerColor = isDark ? Colors.white12 : Colors.grey.withValues(alpha: 0.3);
+    final shadowColor = isDark ? Colors.black54 : Colors.black12;
+
     return Container(
       height: 350,
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        color: cardBg,
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
+            color: shadowColor,
+            blurRadius: 12,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Column(
         children: [
+          // En-tête du tableau
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.symmetric(vertical: 14),
             width: double.infinity,
             decoration: BoxDecoration(
-              color: const Color(backScafoldColor),
+              color: headerBg,
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
               ),
             ),
             child: const Text(
@@ -53,12 +65,15 @@ class MeteoTable extends StatelessWidget {
               ),
             ),
           ),
+
+          // Liste des villes
           Expanded(
             child: ListView.builder(
               itemCount: villes.length,
               itemBuilder: (context, index) {
                 final ville = villes[index];
-                final meteoData = index < meteoDataList.length ? meteoDataList[index] : null;
+                final meteoData =
+                    index < meteoDataList.length ? meteoDataList[index] : null;
 
                 return InkWell(
                   onTap: () {
@@ -75,11 +90,12 @@ class MeteoTable extends StatelessWidget {
                     }
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                          color: Colors.grey.withOpacity(0.3),
+                          color: dividerColor,
                           width: 1,
                         ),
                       ),
@@ -90,10 +106,11 @@ class MeteoTable extends StatelessWidget {
                           flex: 2,
                           child: Text(
                             ville.nom,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontFamily: family,
                               fontWeight: FontWeight.bold,
+                              color: textColor,
                             ),
                           ),
                         ),
@@ -101,9 +118,10 @@ class MeteoTable extends StatelessWidget {
                           flex: 1,
                           child: Text(
                             '${ville.temperature}°C',
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: 15,
                               fontFamily: family,
+                              color: subTextColor,
                             ),
                           ),
                         ),
@@ -111,16 +129,17 @@ class MeteoTable extends StatelessWidget {
                           flex: 2,
                           child: Text(
                             ville.couverture,
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: 14,
                               fontFamily: family,
+                              color: subTextColor,
                             ),
                           ),
                         ),
-                        const Icon(
+                        Icon(
                           Icons.arrow_forward_ios,
-                          size: 16,
-                          color: Colors.grey,
+                          size: 14,
+                          color: isDark ? Colors.white38 : Colors.grey,
                         ),
                       ],
                     ),

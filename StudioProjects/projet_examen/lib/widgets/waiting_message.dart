@@ -24,19 +24,11 @@ class _WaitingMessageState extends State<WaitingMessage> {
   int index = 0;
   String message = 'Démarrage';
 
-  // Temps pour le message
   late Timer _timer;
-
-  // Timer pour la progression de la barre
   late Timer _timerProgress;
 
-  // Compte les secondes passées
   double counterProgress = 0;
-
-  // Pourcentage de la progression
   double progressBar = 0;
-
-  // Largeur de la barre de progression
   double widthProgress = 0;
 
   bool isLoading = true;
@@ -56,6 +48,7 @@ class _WaitingMessageState extends State<WaitingMessage> {
     _timerProgress.cancel();
     super.dispose();
   }
+
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 6), (timer) {
       setState(() {
@@ -74,9 +67,7 @@ class _WaitingMessageState extends State<WaitingMessage> {
     });
   }
 
-  // Timer pour la barre de progression et les appels API
   void _startTimerProgress() {
-    // Premier appel API immédiat
     _fetchWeatherData(0);
 
     _timerProgress = Timer.periodic(const Duration(seconds: 12), (timer) {
@@ -87,17 +78,11 @@ class _WaitingMessageState extends State<WaitingMessage> {
       }
 
       setState(() {
-        // Incrémentation du compteur (12 secondes)
         counterProgress += 12;
-
-        // Mise à jour de la progression en pourcentage (100% divisé par 5 villes = 20% par ville)
         progressBar = (counterProgress / 60) * 100;
         if (progressBar > 100) progressBar = 100;
-
-        // Mise à jour de la largeur de la barre de progression
         widthProgress = (progressBar / 100) * progressbarwidht;
 
-        // Vérifier si la progression est terminée
         if (counterProgress >= 60) {
           isFinish = true;
           timer.cancel();
@@ -106,7 +91,6 @@ class _WaitingMessageState extends State<WaitingMessage> {
     });
   }
 
-  // Méthode pour récupérer les données météo d'une ville
   void _fetchWeatherData(int index) {
     if (index < villesNames.length) {
       setState(() {
@@ -131,12 +115,10 @@ class _WaitingMessageState extends State<WaitingMessage> {
           errorMessage = 'Erreur lors du chargement des données: $error';
           isLoading = false;
         });
-        print('Erreur lors du chargement de l\'API: $error');
       });
     }
   }
 
-  // Méthode pour recommencer
   void _restart() {
     Navigator.pushReplacement(
       context,
@@ -146,17 +128,16 @@ class _WaitingMessageState extends State<WaitingMessage> {
     );
   }
 
-  // Méthode pour afficher l'icône météo appropriée
   Widget _getWeatherIcon(String condition) {
     if (condition.toLowerCase().contains('rain') ||
         condition.toLowerCase().contains('pluie')) {
-      return Lottie.asset("assets/lotties/rain.json");
+      return Lottie.asset("assets/lotties/nuage.json");
     } else if (condition.toLowerCase().contains('cloud') ||
         condition.toLowerCase().contains('nuage')) {
       return Lottie.asset("assets/lotties/nuage.json");
     } else if (condition.toLowerCase().contains('snow') ||
         condition.toLowerCase().contains('neige')) {
-      return Lottie.asset("assets/lotties/snow.json");
+      return Lottie.asset("assets/lotties/nuageux.json");
     } else {
       return Lottie.asset("assets/lotties/ensoleille.json");
     }
@@ -167,35 +148,27 @@ class _WaitingMessageState extends State<WaitingMessage> {
     return hasError
         ? _buildErrorWidget()
         : isFinish
-        ? _buildResultWidget()
-        : _buildLoadingWidget();
+            ? _buildResultWidget()
+            : _buildLoadingWidget();
   }
 
-  // Widget pour afficher l'erreur
   Widget _buildErrorWidget() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.error_outline,
-            color: Colors.red,
-            size: 60,
-          ),
+          const Icon(Icons.error_outline, color: Colors.red, size: 60),
           const SizedBox(height: 20),
           Text(
             errorMessage,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.red,
-            ),
+            style: const TextStyle(fontSize: 16, color: Colors.red),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 30),
           ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(const Color(backScafoldColor)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(backScafoldColor),
+              foregroundColor: Colors.white,
             ),
             onPressed: _restart,
             child: const Text('Réessayer'),
@@ -205,21 +178,17 @@ class _WaitingMessageState extends State<WaitingMessage> {
     );
   }
 
-  // Widget pour afficher le résultat (tableau des villes)
   Widget _buildResultWidget() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        MeteoTable(
-          villes: villes,
-          meteoDataList: meteoDataList,
-        ),
+        MeteoTable(villes: villes, meteoDataList: meteoDataList),
         const SizedBox(height: 30),
         ElevatedButton(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(const Color(backScafoldColor)),
-            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-            minimumSize: MaterialStateProperty.all<Size>(const Size(250, 50)),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(backScafoldColor),
+            foregroundColor: Colors.white,
+            minimumSize: const Size(250, 50),
           ),
           onPressed: _restart,
           child: const Text(
@@ -235,35 +204,36 @@ class _WaitingMessageState extends State<WaitingMessage> {
     );
   }
 
-  // Widget pour afficher le chargement
   Widget _buildLoadingWidget() {
-    // Récupérer la dernière ville chargée pour l'afficher
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final currentVille = villes.isNotEmpty ? villes.last : null;
-    final currentData = meteoDataList.isNotEmpty ? meteoDataList.last : null;
+    final textColor = isDark ? Colors.white70 : const Color(0xFF333A73);
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Box pour afficher le temps de la ville en cours de chargement
+          // Carte de chargement
           Container(
             height: 350,
             width: 300,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(16),
               color: const Color(backScafoldColor),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
+                  color: isDark
+                      ? Colors.black54
+                      : Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
                 ),
               ],
             ),
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                // Nom de la ville
                 Text(
                   currentVille?.nom ?? 'Chargement...',
                   textAlign: TextAlign.center,
@@ -275,7 +245,6 @@ class _WaitingMessageState extends State<WaitingMessage> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                // Animation météo
                 Container(
                   height: 120,
                   width: 120,
@@ -285,12 +254,13 @@ class _WaitingMessageState extends State<WaitingMessage> {
                   ),
                   child: currentVille != null
                       ? _getWeatherIcon(currentVille.couverture)
-                      : Lottie.asset("assets/lotties/loading.json"),
+                      : Lottie.asset("assets/lotties/nuage.json"),
                 ),
                 const SizedBox(height: 30),
-                // Température
                 Text(
-                  currentVille != null ? '${currentVille.temperature}°C' : "Chargement...",
+                  currentVille != null
+                      ? '${currentVille.temperature}°C'
+                      : "Chargement...",
                   style: const TextStyle(
                     color: Colors.white,
                     fontFamily: family,
@@ -299,22 +269,22 @@ class _WaitingMessageState extends State<WaitingMessage> {
                   ),
                 ),
                 const SizedBox(height: 15),
-                // Condition météo
                 Text(
                   currentVille?.couverture ?? "...",
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.white70,
                     fontFamily: family,
                     fontWeight: FontWeight.w500,
                     fontSize: 18,
                   ),
                 ),
                 const SizedBox(height: 15),
-                // Humidité
                 Text(
-                  currentVille != null ? 'Humidité: ${currentVille.humidite}%' : "...",
+                  currentVille != null
+                      ? 'Humidité: ${currentVille.humidite}%'
+                      : "...",
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.white60,
                     fontFamily: family,
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
@@ -328,20 +298,21 @@ class _WaitingMessageState extends State<WaitingMessage> {
           // Message d'attente
           Text(
             message,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontFamily: family,
               fontWeight: FontWeight.w500,
+              color: textColor,
             ),
           ),
           const SizedBox(height: 20),
 
-          // Barre de progression
+          // Barre de progression adaptée
           Container(
             width: progressbarwidht,
             height: progressbarheight,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: isDark ? Colors.white12 : Colors.grey[300],
               borderRadius: BorderRadius.circular(10),
             ),
             child: Stack(
