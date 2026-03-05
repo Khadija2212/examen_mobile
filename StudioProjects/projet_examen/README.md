@@ -4,19 +4,35 @@
 
 ---
 
-## 👥 Auteurs
+👥 Équipe de développement
 
-- Khadidiatou Diouf
-- Mouhammadou Makhtar Diop
-- Mamadou Mbaye
+ - Khadidiatou Diouf
 
+ - Mouhammadou Makhtar Diop
+
+ - Mamadou Mbaye
 ---
 
 ## 📱 Présentation
 
-**MétéoVision** est une application mobile développée avec Flutter qui affiche les conditions météorologiques en temps réel de 5 grandes villes du monde. Elle propose un design moderne avec support du mode sombre/clair, des animations Lottie et une carte interactive OpenStreetMap.
+**MétéoVision** est une application mobile développée avec Flutter permettant d'afficher les conditions météorologiques en temps réel pour plusieurs grandes villes du monde.
+
+L'application offre une interface moderne et intuitive, avec un design soigné et plusieurs fonctionnalités interactives comme une carte dynamique, un mode sombre / clair, et des animations fluides.
+
+Elle utilise l’API OpenWeatherMap afin de récupérer les données météorologiques et les afficher de manière claire et structurée.
 
 ---
+
+🚀 Fonctionnalités principales
+
+✔️ Consultation de la météo en temps réel
+✔️ Affichage des informations météo pour plusieurs villes
+✔️ Carte interactive basée sur OpenStreetMap
+✔️ Mode sombre / mode clair (Dark / Light Mode)
+✔️ Interface moderne avec animations Lottie
+✔️ Chargement progressif des données météo
+✔️ Gestion des erreurs réseau
+
 
 ## �️ Technologies utilisées
 
@@ -24,7 +40,7 @@
 - **API** : [OpenWeatherMap](https://openweathermap.org/api)
 - **Carte** : flutter_map + OpenStreetMap
 - **Gestion d'état** : Provider
-- **Animations** : Lottie
+- **Animations** : Lottie 
 
 ---
 
